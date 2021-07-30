@@ -15,14 +15,30 @@ interface DataType {
 
 skyRequest
   .request<DataType>({
-    url: "/home/multidata",
+    url: "home/multidata",
     method: "GET",
+    showLoading: false,
     interceptors: {
-      requestInterceptors(config) {
-        // config.headers = "test headers"
+      requestInterceptor(config) {
+        console.log("request 单1")
         return config
+      },
+      responseInterceptor(res) {
+        console.log("response 单4", res)
+        return res
       }
     }
+  })
+  .then((res) => {
+    console.log(res)
+    console.log(res.data)
+    console.log(res.returnCode)
+    console.log(res.success)
+  })
+
+skyRequest
+  .get<DataType>({
+    url: "home/multidata"
   })
   .then((res) => {
     console.log(res.data)

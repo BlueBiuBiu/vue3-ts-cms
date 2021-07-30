@@ -1,59 +1,62 @@
 import axios from "axios"
-import type { AxiosInstance } from "axios"
-import { SKYInterceptors, SKYRequestConfig } from "./types"
+import type { AxiosInstance, AxiosRequestConfig } from "axios"
 import { ElLoading } from "element-plus"
 import { ILoadingInstance } from "element-plus/lib/el-loading/src/loading.type"
+import { SKYRequestConfig, SKYInterceptors } from "./types"
 
 class SKYRequest {
   instance: AxiosInstance
   interceptors?: SKYInterceptors
-  showLoading?: boolean
   loading?: ILoadingInstance
+  showLoading?: boolean
 
   constructor(config: SKYRequestConfig) {
     this.instance = axios.create(config)
     this.interceptors = config.interceptors
     this.showLoading = config.showLoading ?? true
 
-    // 1.从config中取出的拦截器是对应的实例的拦截器
+    //创建实例传入的过滤器
     this.instance.interceptors.request.use(
-      this.interceptors?.requestInterceptors,
-      this.interceptors?.requestInterceptorsCatch
+      this.interceptors?.requestInterceptor,
+      this.interceptors?.requestInterceptorCatch
     )
 
+    //创建实例传入的过滤器
     this.instance.interceptors.response.use(
-      this.interceptors?.responseInterceptors,
-      this.interceptors?.responseInterceptorsCatch
+      this.interceptors?.responseInterceptor,
+      this.interceptors?.responseInterceptorCatch
     )
 
-    // 2.添加所有的实例都有的拦截器
+    //所有实例都经过的过滤器
     this.instance.interceptors.request.use(
       (config) => {
+        console.log("request 总2")
+
         if (this.showLoading) {
           this.loading = ElLoading.service({
             lock: true,
-            text: "请求数据中..."
+            text: "加载中..."
           })
         }
-        console.log("所有的实例都有的拦截器: 请求成功拦截")
         return config
       },
       (err) => {
-        console.log("所有的实例都有的拦截器: 请求成功拦截")
         return err
       }
     )
+
+    //所有实例都经过的过滤器
     this.instance.interceptors.response.use(
       (res) => {
+        console.log("response 总3", res)
+
         setTimeout(() => {
           this.loading?.close()
         }, 1000)
-        console.log("所有的实例都有的拦截器: 响应成功拦截")
         return res.data
       },
       (err) => {
         this.loading?.close()
-        console.log("所有的实例都有的拦截器: 响应失败拦截")
         return err
       }
     )
@@ -61,30 +64,48 @@ class SKYRequest {
 
   request<T>(config: SKYRequestConfig): Promise<T> {
     return new Promise((resolve, reject) => {
-      this.showLoading = config.showLoading ?? true
+      if (config.showLoading === false) {
+        this.showLoading = false
+      }
 
-      if (this.showLoading) {
-        this.loading = ElLoading.service({
-          lock: true,
-          text: "请求数据中..."
-        })
-      }
-      if (config.interceptors?.requestInterceptors) {
-        config = config.interceptors.requestInterceptors(config)
-      }
+      //单独请求传入的过滤器
+      this.instance.interceptors.request.use(
+        config.interceptors?.requestInterceptor,
+        config.interceptors?.requestInterceptorCatch
+      )
+
+      //单独请求传入的过滤器
+      this.instance.interceptors.response.use(
+        config.interceptors?.responseInterceptor,
+        config.interceptors?.responseInterceptorCatch
+      )
+
       this.instance
         .request<any, T>(config)
         .then((res) => {
-          if (config.interceptors?.responseInterceptors) {
-            res = config.interceptors.responseInterceptors(res)
-          }
+          console.log("++++++5", res)
           resolve(res)
         })
         .catch((err) => {
-          this.loading?.close()
           reject(err)
         })
     })
+  }
+
+  get<T>(config: SKYRequestConfig): Promise<T> {
+    return this.request<T>({ ...config, method: "GET" })
+  }
+
+  post<T>(config: SKYRequestConfig): Promise<T> {
+    return this.request<T>({ ...config, method: "POST" })
+  }
+
+  delete<T>(config: SKYRequestConfig): Promise<T> {
+    return this.request<T>({ ...config, method: "DELETE" })
+  }
+
+  patch<T>(config: SKYRequestConfig): Promise<T> {
+    return this.request<T>({ ...config, method: "PATCH" })
   }
 }
 
