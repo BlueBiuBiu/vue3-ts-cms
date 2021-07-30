@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from "axios"
 
 // axios.get('http://123.207.32.32:8000/home/multidata').then((res) => {
 //   console.log(res)
@@ -28,13 +28,13 @@ import axios from 'axios'
 
 //Promise中类型的使用
 new Promise<string>((resolve) => {
-  resolve('123')
+  resolve("123")
 }).then((res) => {
   console.log(res)
 })
 
 //axios的配置选项
-axios.defaults.baseURL = 'http://httpbin.org'
+axios.defaults.baseURL = "http://httpbin.org"
 axios.defaults.timeout = 10000
 
 // axios
