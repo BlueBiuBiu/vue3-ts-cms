@@ -16,4 +16,4 @@ class LocalCache {
   }
 }
 
-export default new LocalCache
+export default new LocalCache()

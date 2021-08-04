@@ -1,4 +1,4 @@
 export interface ILoginState {
-  id: string,
+  id: string
   token: string
 }
