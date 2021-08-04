@@ -6,7 +6,7 @@
         <template #label>
           <span><i class="el-icon-user"></i> 账号登录</span>
         </template>
-        <login-account ref="loginAcountRef" />
+        <login-account ref="loginAccountRef" />
       </el-tab-pane>
       <el-tab-pane label="消息中心">
         <template #label>
@@ -38,7 +38,7 @@ export default defineComponent({
     const loginAccountRef = ref<InstanceType<typeof LoginAccount>>()
 
     const sumbit = () => {
-      loginAccountRef.value?.validate()
+      loginAccountRef.value?.validate(isKeepPassword.value)
     }
 
     return {
