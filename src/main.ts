@@ -5,6 +5,7 @@ import router from "./router"
 import { registerGlobal } from "./global"
 import "normalize.css"
 import "./assets/css/index.less"
+import { setupStore } from "@/store"
 
 const app = createApp(App)
 
@@ -12,4 +13,5 @@ const app = createApp(App)
 app.use(registerGlobal)
 app.use(store)
 app.use(router)
+setupStore()
 app.mount("#app")

@@ -49,10 +49,7 @@ class SKYRequest {
     this.instance.interceptors.response.use(
       (res) => {
         console.log("response 总3", res)
-
-        setTimeout(() => {
-          this.loading?.close()
-        }, 1000)
+        this.loading?.close()
         return res.data
       },
       (err) => {
@@ -83,7 +80,6 @@ class SKYRequest {
       this.instance
         .request<any, T>(config)
         .then((res) => {
-          console.log("++++++5", res)
           resolve(res)
         })
         .catch((err) => {

@@ -1,6 +1,6 @@
 import SKYRequest from "./request"
 import { BASE_URL, TIME_OUT } from "./request/config"
-console.log(BASE_URL)
+import LocalCache from "@/utils/cache"
 
 const skyRequest = new SKYRequest({
   baseURL: BASE_URL,
@@ -8,6 +8,11 @@ const skyRequest = new SKYRequest({
   interceptors: {
     requestInterceptor(config) {
       // console.log(config)
+      const token = LocalCache.getCache("token")
+
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
       return config
     }
   }
