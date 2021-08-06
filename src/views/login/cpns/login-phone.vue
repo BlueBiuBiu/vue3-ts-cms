@@ -1,8 +1,8 @@
 <template>
   <div class="login-phone">
-    <el-form :model="phone" status-icon ref="ruleForm" label-width="70px" class="demo-ruleForm">
+    <el-form :model="phone" status-icon ref="ruleForm" :rules="rules" label-width="70px">
       <el-form-item label="手机号" prop="num">
-        <el-input v-model="phone.num"></el-input>
+        <el-input v-model.number="phone.num"></el-input>
       </el-form-item>
       <el-form-item label="验证码" prop="code">
         <div class="code">
@@ -15,17 +15,30 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue"
+import { ElForm } from "element-plus"
+import { defineComponent, reactive, ref } from "vue"
+import { rules } from "../config/login-phone"
 
 export default defineComponent({
   setup() {
     const phone = reactive({
-      num: "",
+      num: null,
       code: ""
     })
 
+    const ruleForm = ref<InstanceType<typeof ElForm>>()
+
+    const validate = () => {
+      ruleForm.value?.validate((valid) => {
+        console.log(valid)
+      })
+    }
+
     return {
-      phone
+      phone,
+      rules,
+      ruleForm,
+      validate
     }
   }
 })

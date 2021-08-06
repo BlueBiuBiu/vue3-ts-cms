@@ -1,18 +1,18 @@
 <template>
   <div class="login-pane">
     <h1 class="title">后台管理系统</h1>
-    <el-tabs type="border-card" stretch>
-      <el-tab-pane>
+    <el-tabs type="border-card" stretch v-model="currentTap">
+      <el-tab-pane name="account">
         <template #label>
           <span><i class="el-icon-user"></i> 账号登录</span>
         </template>
         <login-account ref="loginAccountRef" />
       </el-tab-pane>
-      <el-tab-pane label="消息中心">
+      <el-tab-pane name="phone">
         <template #label>
           <span><i class="el-icon-mobile-phone"></i> 手机登录</span>
         </template>
-        <login-phone />
+        <login-phone ref="loginPhoneRef" />
       </el-tab-pane>
     </el-tabs>
     <div class="operate">
@@ -35,15 +35,24 @@ export default defineComponent({
   },
   setup() {
     const isKeepPassword = ref(true)
+    const currentTap = ref("account")
+
     const loginAccountRef = ref<InstanceType<typeof LoginAccount>>()
+    const loginPhoneRef = ref<InstanceType<typeof LoginPhone>>()
 
     const sumbit = () => {
-      loginAccountRef.value?.validate(isKeepPassword.value)
+      if (currentTap.value === "account") {
+        loginAccountRef.value?.validate(isKeepPassword.value)
+      } else {
+        loginPhoneRef.value?.validate()
+      }
     }
 
     return {
       isKeepPassword,
       loginAccountRef,
+      loginPhoneRef,
+      currentTap,
       sumbit
     }
   }
