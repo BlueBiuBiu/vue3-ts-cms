@@ -1,9 +1,14 @@
 import type { App } from "vue"
 import {
   ElAside,
+  ElAvatar,
   ElButton,
   ElCheckbox,
   ElContainer,
+  ElDatePicker,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
   ElForm,
   ElFormItem,
   ElHeader,
@@ -13,7 +18,11 @@ import {
   ElMenu,
   ElMenuItem,
   ElMenuItemGroup,
+  ElOption,
   ElRadio,
+  ElRow,
+  ElCol,
+  ElSelect,
   ElSubmenu,
   ElTabPane,
   ElTabs
@@ -22,23 +31,32 @@ import "element-plus/lib/theme-chalk/base.css"
 // import 'element-plus/lib/theme-chalk/el-button.css'
 
 const components = [
+  ElAside,
+  ElAvatar,
   ElButton,
+  ElCheckbox,
+  ElContainer,
+  ElDatePicker,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
   ElForm,
   ElFormItem,
-  ElInput,
-  ElRadio,
-  ElTabs,
-  ElTabPane,
-  ElCheckbox,
-  ElLink,
-  ElContainer,
   ElHeader,
+  ElInput,
+  ElLink,
   ElMain,
-  ElAside,
   ElMenu,
   ElMenuItem,
   ElMenuItemGroup,
-  ElSubmenu
+  ElOption,
+  ElRadio,
+  ElRow,
+  ElCol,
+  ElSelect,
+  ElSubmenu,
+  ElTabPane,
+  ElTabs
 ]
 
 export function registerElementUi(app: App) {

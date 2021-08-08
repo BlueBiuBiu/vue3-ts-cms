@@ -16,7 +16,7 @@
           </template>
           <template v-for="submenu in menu.children" :key="submenu.id">
             <template v-if="submenu.type === 2">
-              <el-menu-item :index="submenu.id + ''">
+              <el-menu-item :index="submenu.id + ''" @click="menuClick(submenu)">
                 <i :class="submenu.icon"></i>
                 <span>{{ submenu.name }}</span>
               </el-menu-item>
@@ -36,6 +36,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from "vue"
+import { useRouter } from "vue-router"
 // import { useStore } from "vuex"
 import { useStore } from "@/store"
 
@@ -48,9 +49,16 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
+    const router = useRouter()
+
     const userMenus = computed(() => store.state.login.userMenus)
+
+    const menuClick = (submenu: any) => {
+      router.push({ path: submenu.url })
+    }
     return {
-      userMenus
+      userMenus,
+      menuClick
     }
   }
 })
