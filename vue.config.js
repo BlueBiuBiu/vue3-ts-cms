@@ -9,6 +9,7 @@ module.exports = {
         },
         changeOrigin: true
       }
-    }
+    },
+    historyApiFallback: true
   }
 }

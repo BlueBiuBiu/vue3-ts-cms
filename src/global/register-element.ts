@@ -25,7 +25,9 @@ import {
   ElSelect,
   ElSubmenu,
   ElTabPane,
-  ElTabs
+  ElTabs,
+  ElResult,
+  ElImage
 } from "element-plus"
 import "element-plus/lib/theme-chalk/base.css"
 // import 'element-plus/lib/theme-chalk/el-button.css'
@@ -56,7 +58,9 @@ const components = [
   ElSelect,
   ElSubmenu,
   ElTabPane,
-  ElTabs
+  ElTabs,
+  ElResult,
+  ElImage
 ]
 
 export function registerElementUi(app: App) {
