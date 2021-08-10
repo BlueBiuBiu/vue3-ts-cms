@@ -1,6 +1,6 @@
 <template>
   <div class="user-info">
-    <div>面包屑</div>
+    <sky-breamcrumb :breadcrumbMenus="breadcrumbMenus" />
     <el-dropdown>
       <span class="el-dropdown-link">
         <el-avatar
@@ -19,8 +19,32 @@
   </div>
 </template>
 
-<script>
-export default {}
+<script lang="ts">
+import { defineComponent, computed } from "vue"
+import { useStore } from "vuex"
+import { useRoute } from "vue-router"
+import SkyBreamcrumb from "@/base-ui/breadcrumb"
+import { PathToBreadcrumbMenus } from "@/utils/map-menus"
+
+export default defineComponent({
+  components: {
+    SkyBreamcrumb
+  },
+  setup() {
+    const store = useStore()
+    const route = useRoute()
+
+    const breadcrumbMenus = computed(() => {
+      const userMenus = store.state.login.userMenus
+      const currentPath = route.path
+      return PathToBreadcrumbMenus(userMenus, currentPath)
+    })
+
+    return {
+      breadcrumbMenus
+    }
+  }
+})
 </script>
 
 <style lang="less" scoped>

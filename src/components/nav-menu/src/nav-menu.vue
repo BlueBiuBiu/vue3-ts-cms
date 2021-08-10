@@ -1,7 +1,7 @@
 <template>
   <div class="nav-menu">
     <el-menu
-      default-active="2"
+      :default-active="defaultValue"
       class="el-menu-vertical"
       :collapse="collapse"
       background-color="#0c2135"
@@ -35,10 +35,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue"
-import { useRouter } from "vue-router"
+import { defineComponent, computed, ref } from "vue"
+import { useRouter, useRoute } from "vue-router"
 // import { useStore } from "vuex"
 import { useStore } from "@/store"
+import { pathMapMenu } from "@/utils/map-menus"
 
 export default defineComponent({
   props: {
@@ -50,14 +51,22 @@ export default defineComponent({
   setup() {
     const store = useStore()
     const router = useRouter()
+    const route = useRoute()
 
     const userMenus = computed(() => store.state.login.userMenus)
+    // console.log(userMenus.value)
 
+    const currentPath = route.path
+    const menu = pathMapMenu(userMenus.value, currentPath)
+    // console.log(menu)
+
+    const defaultValue = ref(menu.id + "")
     const menuClick = (submenu: any) => {
       router.push({ path: submenu.url })
     }
     return {
       userMenus,
+      defaultValue,
       menuClick
     }
   }
