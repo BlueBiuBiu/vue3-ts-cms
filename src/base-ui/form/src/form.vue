@@ -1,21 +1,29 @@
 <template>
   <div class="sky-form">
+    <div class="header">
+      <slot name="header"></slot>
+    </div>
     <el-form :label-width="labelWidth">
       <el-row>
         <template v-for="item in formItems" :key="item">
           <el-col v-bind="colLayout">
             <el-form-item :label="item.label" :style="itemStyle" :label-width="itemLabelWidth">
               <template v-if="item.type === 'input'">
-                <el-input :placeholder="item.placeholder" />
+                <el-input v-model="formValue[`${item.field}`]" :placeholder="item.placeholder" />
               </template>
               <template v-else-if="item.type === 'password'">
-                <el-input :placeholder="item.placeholder" show-password />
+                <el-input
+                  v-model="formValue[`${item.field}`]"
+                  :placeholder="item.placeholder"
+                  show-password
+                />
               </template>
               <template v-else-if="item.type === 'select'">
                 <el-select
                   style="width: 100%"
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
+                  v-model="formValue[`${item.field}`]"
                 >
                   <el-option
                     v-for="option in item.options"
@@ -30,6 +38,7 @@
                   style="width: 100%"
                   type="daterange"
                   v-bind="item.otherOptions"
+                  v-model="formValue[`${item.field}`]"
                 ></el-date-picker>
               </template>
             </el-form-item>
@@ -37,15 +46,22 @@
         </template>
       </el-row>
     </el-form>
+    <div class="footer">
+      <slot name="footer"></slot>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { PropType } from "vue"
+import { PropType, ref, defineComponent, watch } from "vue"
 import { IFormItem } from "../types"
 
-export default {
+export default defineComponent({
   props: {
+    modelValue: {
+      type: Object,
+      required: true
+    },
     formItems: {
       type: Array as PropType<IFormItem[]>,
       default: () => []
@@ -76,8 +92,27 @@ export default {
         padding: "0 30px"
       })
     }
+  },
+  emits: ["update:modelValue"],
+  setup(props, { emit }) {
+    console.log(props.modelValue)
+
+    const formValue = ref({ ...props.modelValue })
+    watch(
+      formValue,
+      (newValue) => {
+        emit("update:modelValue", newValue)
+      },
+      {
+        deep: true
+      }
+    )
+
+    return {
+      formValue
+    }
   }
-}
+})
 </script>
 
 <style lang="less" scoped>

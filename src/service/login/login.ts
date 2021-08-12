@@ -1,6 +1,7 @@
 import { skyRequest } from "../index"
 
-import { IAccount, ILoginResult, IDataType } from "@/service/login/type"
+import { IAccount, ILoginResult } from "@/service/login/type"
+import { IDataType } from "@/service/type"
 
 enum LoginApi {
   AccountLogin = "login",

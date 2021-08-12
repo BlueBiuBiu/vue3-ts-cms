@@ -29,7 +29,10 @@ import {
   ElResult,
   ElImage,
   ElBreadcrumb,
-  ElBreadcrumbItem
+  ElBreadcrumbItem,
+  ElTable,
+  ElTableColumn,
+  ElTag
 } from "element-plus"
 import "element-plus/lib/theme-chalk/base.css"
 // import 'element-plus/lib/theme-chalk/el-button.css'
@@ -64,7 +67,10 @@ const components = [
   ElResult,
   ElImage,
   ElBreadcrumb,
-  ElBreadcrumbItem
+  ElBreadcrumbItem,
+  ElTable,
+  ElTableColumn,
+  ElTag
 ]
 
 export function registerElementUi(app: App) {
