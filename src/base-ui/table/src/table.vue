@@ -1,7 +1,21 @@
 <template>
   <div class="table">
+    <div class="header">
+      <slot name="header"></slot>
+    </div>
     <el-table :data="tableData" style="width: 100%">
-      <template v-for="config in tablePropConfig" :key="config">
+      <el-table-column
+        v-if="tablePropConfig.showSelection"
+        type="selection"
+        align="center"
+      ></el-table-column>
+      <el-table-column
+        v-if="tablePropConfig.showIndex"
+        type="index"
+        label="序号"
+        align="center"
+      ></el-table-column>
+      <template v-for="config in tablePropConfig.ITableProps" :key="config">
         <el-table-column v-bind="config">
           <template #default="scope">
             <slot :name="config.slotName" :row="scope.row">
@@ -11,6 +25,9 @@
         </el-table-column>
       </template>
     </el-table>
+    <div class="footer">
+      <slot name="footer"></slot>
+    </div>
   </div>
 </template>
 
@@ -24,8 +41,8 @@ export default defineComponent({
       default: () => []
     },
     tablePropConfig: {
-      type: Array,
-      default: () => []
+      type: Object,
+      require: true
     }
   },
   setup() {
@@ -36,5 +53,6 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .table {
+  background: #fff;
 }
 </style>

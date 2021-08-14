@@ -8,17 +8,19 @@
       </template>
       <template #footer>
         <div class="operate">
-          <el-button>重置</el-button>
-          <el-button type="primary" icon="el-icon-search">搜索</el-button>
+          <el-button size="small">重置</el-button>
+          <el-button size="small" type="primary" icon="el-icon-search">搜索</el-button>
         </div>
       </template>
     </page-search>
-    <sky-table :tableData="userList" :tablePropConfig="tablePropConfig">
-      <template #enable="row">
-        <el-tag v-if="row.row.enable" type="success">启用</el-tag>
-        <el-tag v-else type="danger">禁用</el-tag>
+    <page-content :tablePropConfig="tablePropConfig" pageName="users" class="page-content">
+      <template #header>
+        <div class="table-header">
+          <h3>用户数据</h3>
+          <el-button size="small" type="primary">新建用户</el-button>
+        </div>
       </template>
-    </sky-table>
+    </page-content>
   </div>
 </template>
 
@@ -27,30 +29,18 @@ import { defineComponent, ref } from "vue"
 import { searchFormConfig, tablePropConfig } from "./config"
 import { useStore } from "@/store"
 import PageSearch from "@/components/page-search"
-import SkyTable from "@/base-ui/table"
+import pageContent from "@/components/page-content"
 
 export default defineComponent({
   name: "user",
   components: {
     PageSearch,
-    SkyTable
+    pageContent
   },
   setup() {
-    const store = useStore()
-    store.dispatch("system/getUserListAction", {
-      pageUrl: "/users/list",
-      queryInfo: {
-        offset: 0,
-        size: 10
-      }
-    })
-
-    const userList = store.state.system.userList
-    const userListCount = store.state.system.userListCount
     return {
       searchFormConfig,
-      tablePropConfig,
-      userList
+      tablePropConfig
     }
   }
 })
@@ -63,6 +53,15 @@ export default defineComponent({
   }
   .operate {
     text-align: right;
+  }
+  .page-content {
+    border-top: 20px solid #f0f2f5;
+  }
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
   }
 }
 </style>

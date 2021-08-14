@@ -1,6 +1,6 @@
 <template>
   <div class="page-search">
-    <sky-form v-bind="searchFormConfig" v-model="formData">
+    <sky-form v-bind="searchFormConfig" v-model="formOriginItems">
       <template #header>
         <slot name="header"></slot>
       </template>
@@ -25,17 +25,15 @@ export default defineComponent({
   components: {
     SkyForm
   },
-  setup() {
-    const formData = ref({
-      id: "",
-      name: "",
-      password: "",
-      sport: "",
-      createTime: ""
-    })
+  setup(props) {
+    const formItems = props.searchFormConfig.formItems ?? []
+    const formOriginItems: any = {}
+    for (const formItem of formItems) {
+      formOriginItems[formItem.field] = ""
+    }
 
     return {
-      formData
+      formOriginItems
     }
   }
 })

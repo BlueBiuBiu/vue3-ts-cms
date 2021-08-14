@@ -32,7 +32,8 @@ import {
   ElBreadcrumbItem,
   ElTable,
   ElTableColumn,
-  ElTag
+  ElTag,
+  ElPagination
 } from "element-plus"
 import "element-plus/lib/theme-chalk/base.css"
 // import 'element-plus/lib/theme-chalk/el-button.css'
@@ -70,7 +71,8 @@ const components = [
   ElBreadcrumbItem,
   ElTable,
   ElTableColumn,
-  ElTag
+  ElTag,
+  ElPagination
 ]
 
 export function registerElementUi(app: App) {

@@ -14,4 +14,5 @@ app.use(registerGlobal)
 app.use(store)
 setupStore()
 app.use(router)
+
 app.mount("#app")
