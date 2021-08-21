@@ -1,12 +1,10 @@
 <template>
   <div class="page-content">
-    <sky-table :tableData="userList" :tablePropConfig="tablePropConfig">
+    <sky-table :tableData="dataList" :tablePropConfig="tablePropConfig">
       <template #header>
-        <slot name="header"></slot>
-      </template>
-      <template #enable="row">
-        <el-tag v-if="row.row.enable" type="success">启用</el-tag>
-        <el-tag v-else type="danger">禁用</el-tag>
+        <div class="table-header">
+          <el-button v-if="isCreate" size="small" type="primary">新建用户</el-button>
+        </div>
       </template>
       <template #createAt="row">
         {{ $filters.format(row.row.createAt) }}
@@ -15,8 +13,13 @@
         {{ $filters.format(row.row.updateAt) }}
       </template>
       <template #operate>
-        <el-button size="small" type="text">编辑</el-button>
-        <el-button size="small" type="text">删除</el-button>
+        <el-button v-if="isUpdate" size="small" type="text">编辑</el-button>
+        <el-button v-if="isDelete" size="small" type="text">删除</el-button>
+      </template>
+      <template v-for="item in customPropSlots" :key="item.prop" #[item.slotName]="scope">
+        <template v-if="item.slotName">
+          <slot :name="item.slotName" :row="scope"></slot>
+        </template>
       </template>
       <template #footer>
         <slot name="footer">
@@ -24,11 +27,11 @@
             <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
-              :current-page="currentPage4"
-              :page-sizes="[100, 200, 300, 400]"
-              :page-size="100"
+              :current-page="page.currentPage"
+              :page-sizes="[10, 20, 30]"
+              :page-size="page.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="400"
+              :total="dataListCount"
             >
             </el-pagination>
           </div>
@@ -39,8 +42,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
+import { defineComponent, computed, ref, watch } from "vue"
 import { useStore } from "@/store"
+import { usePermisstions } from "@/hooks/usePermisstions"
 
 import SkyTable from "@/base-ui/table"
 
@@ -51,27 +55,70 @@ export default defineComponent({
   props: {
     tablePropConfig: {
       type: Object,
-      require: true
+      required: true
     },
     pageName: {
       type: String,
-      require: true
+      required: true
     }
   },
   setup(props) {
     const store = useStore()
-    store.dispatch("system/getPageListAction", {
-      pageName: props.pageName,
-      queryInfo: {
-        offset: 0,
-        size: 10
-      }
+    const page = ref({ pageSize: 10, currentPage: 1 })
+
+    const isCreate = usePermisstions(props.pageName, "create")
+    const isUpdate = usePermisstions(props.pageName, "update")
+    const isDelete = usePermisstions(props.pageName, "delete")
+    const isQuery = usePermisstions(props.pageName, "query")
+
+    // 获取父组件动态插槽名称
+    const customPropSlots = props.tablePropConfig?.ITableProps.filter((item: any) => {
+      if (item.slotName === "createAt") return false
+      if (item.slotName === "updateAt") return false
+      if (item.slotName === "operate") return false
+      return true
     })
 
-    const userList = store.state.system.userList
-    const userListCount = store.state.system.userListCount
+    const getPageData = (queryInfo: any = {}) => {
+      if (!isQuery) return
+      store.dispatch("system/getPageListAction", {
+        pageName: props.pageName,
+        queryInfo: {
+          offset: (page.value.currentPage - 1) * page.value.pageSize,
+          size: page.value.pageSize,
+          ...queryInfo
+        }
+      })
+    }
+
+    getPageData()
+
+    const dataList = computed(() => store.getters["system/pageList"](props.pageName))
+    const dataListCount = computed(() => store.getters["system/pageListCount"](props.pageName))
+
+    const handleSizeChange = (val: any) => {
+      page.value.pageSize = val
+    }
+    const handleCurrentChange = (val: any) => {
+      page.value.currentPage = val
+    }
+
+    watch(page, () => getPageData(), {
+      deep: true
+    })
+
     return {
-      userList
+      getPageData,
+      dataList,
+      dataListCount,
+      page,
+      customPropSlots,
+      handleSizeChange,
+      handleCurrentChange,
+      isCreate,
+      isUpdate,
+      isDelete,
+      isQuery
     }
   }
 })
@@ -79,6 +126,12 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .page-content {
+  .table-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+  }
   .footer {
     display: flex;
     justify-content: flex-end;

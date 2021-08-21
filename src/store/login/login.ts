@@ -9,6 +9,7 @@ import { ILoginState } from "./type"
 import { IRootState } from "../type"
 import { mapMenus } from "@/utils/map-menus"
 import LocalCache from "@/utils/cache"
+import { menuPathPermissions } from "@/utils/map-menus"
 
 import router from "@/router"
 
@@ -18,7 +19,8 @@ const loginModule: Module<ILoginState, IRootState> = {
     return {
       token: "",
       userInfo: {},
-      userMenus: []
+      userMenus: [],
+      permisstions: []
     }
   },
   getters: {},
@@ -35,6 +37,7 @@ const loginModule: Module<ILoginState, IRootState> = {
       for (const route of routes) {
         router.addRoute("main", route)
       }
+      state.permisstions = menuPathPermissions(userMenus)
     }
   },
   actions: {

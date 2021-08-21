@@ -72,7 +72,8 @@ const components = [
   ElTable,
   ElTableColumn,
   ElTag,
-  ElPagination
+  ElPagination,
+  ElImage
 ]
 
 export function registerElementUi(app: App) {

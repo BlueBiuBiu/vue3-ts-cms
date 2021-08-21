@@ -9,11 +9,16 @@
           <el-col v-bind="colLayout">
             <el-form-item :label="item.label" :style="itemStyle" :label-width="itemLabelWidth">
               <template v-if="item.type === 'input'">
-                <el-input v-model="formValue[`${item.field}`]" :placeholder="item.placeholder" />
+                <el-input
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handleChange($event, item.field)"
+                  :placeholder="item.placeholder"
+                />
               </template>
               <template v-else-if="item.type === 'password'">
                 <el-input
-                  v-model="formValue[`${item.field}`]"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handleChange($event, item.field)"
                   :placeholder="item.placeholder"
                   show-password
                 />
@@ -23,7 +28,8 @@
                   style="width: 100%"
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
-                  v-model="formValue[`${item.field}`]"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handleChange($event, item.field)"
                 >
                   <el-option
                     v-for="option in item.options"
@@ -38,7 +44,8 @@
                   style="width: 100%"
                   type="daterange"
                   v-bind="item.otherOptions"
-                  v-model="formValue[`${item.field}`]"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handleChange($event, item.field)"
                 ></el-date-picker>
               </template>
             </el-form-item>
@@ -95,21 +102,12 @@ export default defineComponent({
   },
   emits: ["update:modelValue"],
   setup(props, { emit }) {
-    console.log(props.modelValue)
-
-    const formValue = ref({ ...props.modelValue })
-    watch(
-      formValue,
-      (newValue) => {
-        emit("update:modelValue", newValue)
-      },
-      {
-        deep: true
-      }
-    )
+    const handleChange = (value: any, field: string) => {
+      emit("update:modelValue", { ...props.modelValue, [field]: value })
+    }
 
     return {
-      formValue
+      handleChange
     }
   }
 })

@@ -1,6 +1,8 @@
 export interface IUserInfo {
-  userList: any[]
-  userListCount: number
+  usersList: any[]
+  usersListCount: number
   roleList: any[]
   roleListCount: number
+  goodsList: any[]
+  goodsListCount: number
 }

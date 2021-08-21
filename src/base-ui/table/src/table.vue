@@ -16,7 +16,7 @@
         align="center"
       ></el-table-column>
       <template v-for="config in tablePropConfig.ITableProps" :key="config">
-        <el-table-column v-bind="config">
+        <el-table-column v-bind="config" show-overflow-tooltip>
           <template #default="scope">
             <slot :name="config.slotName" :row="scope.row">
               {{ scope.row[config.prop] }}
