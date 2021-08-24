@@ -7,7 +7,12 @@
       <el-row>
         <template v-for="item in formItems" :key="item">
           <el-col v-bind="colLayout">
-            <el-form-item :label="item.label" :style="itemStyle" :label-width="itemLabelWidth">
+            <el-form-item
+              v-if="!item.isHidden"
+              :label="item.label"
+              :style="itemStyle"
+              :label-width="itemLabelWidth"
+            >
               <template v-if="item.type === 'input'">
                 <el-input
                   :model-value="modelValue[`${item.field}`]"
@@ -60,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, ref, defineComponent, watch } from "vue"
+import { PropType, defineComponent } from "vue"
 import { IFormItem } from "../types"
 
 export default defineComponent({

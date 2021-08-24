@@ -16,33 +16,71 @@
       :tablePropConfig="tablePropConfig"
       pageName="users"
       class="page-content"
+      @createBtnClick="createBtnClick"
+      @editBtnClick="editBtnClick"
     >
     </page-content>
+    <form-modal
+      ref="formModalRef"
+      pageName="users"
+      :formModalConfig="newFormModalConfig"
+      :defaultFormValue="defaultFormValue"
+    >
+    </form-modal>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
-import { searchFormConfig, tablePropConfig } from "./config"
+import { defineComponent, computed } from "vue"
+import { useStore } from "vuex"
+import { searchFormConfig, tablePropConfig, formModalConfig } from "./config"
 import PageSearch from "@/components/page-search"
 import pageContent from "@/components/page-content"
+import formModal from "@/components/form-modal"
 import { usePageSearch } from "@/hooks/usePageSearch"
+import { useFormModal } from "@/hooks/useFormModal"
 
 export default defineComponent({
   name: "user",
   components: {
     PageSearch,
-    pageContent
+    pageContent,
+    formModal
   },
   setup() {
+    const store = useStore()
+
     const [pageContentRef, handleReset, handleQuery] = usePageSearch()
+    const [formModalRef, defaultFormValue, createBtnClick, editBtnClick] = useFormModal()
+
+    const newFormModalConfig = computed(() => {
+      const departmentItem = formModalConfig.formItems.find(
+        (item: any) => item.field === "departmentId"
+      )
+      departmentItem!.options = store.state.entireDepartment.map((item: any) => ({
+        label: item.name,
+        value: item.id
+      }))
+      const roleItem = formModalConfig.formItems.find((item: any) => item.field === "roleId")
+      roleItem!.options = store.state.entireRole.map((item: any) => ({
+        label: item.name,
+        value: item.id
+      }))
+
+      return formModalConfig
+    })
 
     return {
       searchFormConfig,
       tablePropConfig,
+      newFormModalConfig,
       pageContentRef,
       handleReset,
-      handleQuery
+      handleQuery,
+      formModalRef,
+      defaultFormValue,
+      createBtnClick,
+      editBtnClick
     }
   }
 })

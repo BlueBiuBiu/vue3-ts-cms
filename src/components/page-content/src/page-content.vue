@@ -3,7 +3,9 @@
     <sky-table :tableData="dataList" :tablePropConfig="tablePropConfig">
       <template #header>
         <div class="table-header">
-          <el-button v-if="isCreate" size="small" type="primary">新建用户</el-button>
+          <el-button v-if="isCreate" size="small" type="primary" @click="handleBtnCreate"
+            >新建用户</el-button
+          >
         </div>
       </template>
       <template #createAt="row">
@@ -12,9 +14,13 @@
       <template #updateAt="row">
         {{ $filters.format(row.row.updateAt) }}
       </template>
-      <template #operate>
-        <el-button v-if="isUpdate" size="small" type="text">编辑</el-button>
-        <el-button v-if="isDelete" size="small" type="text">删除</el-button>
+      <template #operate="row">
+        <el-button v-if="isUpdate" size="small" type="text" @click="handleBtnEdit(row)"
+          >编辑</el-button
+        >
+        <el-button v-if="isDelete" size="small" type="text" @click="handleBtnDel(row)"
+          >删除</el-button
+        >
       </template>
       <template v-for="item in customPropSlots" :key="item.prop" #[item.slotName]="scope">
         <template v-if="item.slotName">
@@ -62,7 +68,8 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  emits: ["createBtnClick", "editBtnClick", "delBtnClick"],
+  setup(props, { emit }) {
     const store = useStore()
     const page = ref({ pageSize: 10, currentPage: 1 })
 
@@ -79,6 +86,7 @@ export default defineComponent({
       return true
     })
 
+    // 获取页面数据
     const getPageData = (queryInfo: any = {}) => {
       if (!isQuery) return
       store.dispatch("system/getPageListAction", {
@@ -93,6 +101,7 @@ export default defineComponent({
 
     getPageData()
 
+    // 分页控制处理
     const dataList = computed(() => store.getters["system/pageList"](props.pageName))
     const dataListCount = computed(() => store.getters["system/pageListCount"](props.pageName))
 
@@ -107,6 +116,22 @@ export default defineComponent({
       deep: true
     })
 
+    // 操作
+    const handleBtnCreate = () => {
+      emit("createBtnClick")
+    }
+
+    const handleBtnEdit = (row: any) => {
+      emit("editBtnClick", row.row)
+    }
+
+    const handleBtnDel = (row: any) => {
+      store.dispatch("system/delDataAction", {
+        pageName: props.pageName,
+        id: row.row.id
+      })
+    }
+
     return {
       getPageData,
       dataList,
@@ -118,7 +143,10 @@ export default defineComponent({
       isCreate,
       isUpdate,
       isDelete,
-      isQuery
+      isQuery,
+      handleBtnCreate,
+      handleBtnEdit,
+      handleBtnDel
     }
   }
 })

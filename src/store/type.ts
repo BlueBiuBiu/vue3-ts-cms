@@ -3,6 +3,8 @@ import type { IUserInfo } from "./main/system/types"
 export interface IRootState {
   name: string
   age: number
+  entireDepartment: string[]
+  entireRole: string[]
 }
 
 export interface IModule {

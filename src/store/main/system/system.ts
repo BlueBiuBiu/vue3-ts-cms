@@ -1,6 +1,6 @@
 import { Module } from "vuex"
 
-import { getPageListData } from "@/service/main/system/system"
+import { getPageListData, createData, editData, delData } from "@/service/main/system/system"
 import { IUserInfo } from "./types"
 import { IRootState } from "../../type"
 
@@ -57,6 +57,49 @@ const systemModule: Module<IUserInfo, IRootState> = {
       const { list, totalCount } = pageResult.data
       commit(`change${pageName}List`, list)
       commit(`change${pageName}ListCount`, totalCount)
+    },
+    async createDataAction({ dispatch }, payload: any) {
+      //创建数据
+      const { pageName, newData } = payload
+      const url = `/${pageName}`
+      createData(url, newData)
+
+      //请求新数据
+      dispatch("getPageListAction", {
+        pageName,
+        queryInfo: {
+          offset: 0,
+          size: 10
+        }
+      })
+    },
+    async editDataAction({ dispatch }, payload: any) {
+      const { pageName, id, newData } = payload
+      const url = `/${pageName}/${id}`
+      editData(url, newData)
+
+      //请求新数据
+      dispatch("getPageListAction", {
+        pageName,
+        queryInfo: {
+          offset: 0,
+          size: 10
+        }
+      })
+    },
+    async delDataAction({ dispatch }, payload: any) {
+      const { pageName, id } = payload
+      const url = `/${pageName}/${id}`
+      delData(url)
+
+      //请求新数据
+      dispatch("getPageListAction", {
+        pageName,
+        queryInfo: {
+          offset: 0,
+          size: 10
+        }
+      })
     }
   },
   modules: {}
