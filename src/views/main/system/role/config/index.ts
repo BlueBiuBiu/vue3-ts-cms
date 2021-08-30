@@ -61,3 +61,27 @@ export const tablePropConfig: ITableItem = {
   showIndex: true,
   showSelection: true
 }
+
+export const formModalConfig: IForm = {
+  formItems: [
+    {
+      field: "name",
+      type: "input",
+      label: "用户名"
+    },
+    {
+      field: "password",
+      type: "input",
+      label: "密码",
+      isHidden: true
+    }
+  ],
+  labelWidth: "50px",
+  itemLabelWidth: "70px",
+  colLayout: {
+    span: 24
+  },
+  itemStyle: {
+    padding: "0"
+  }
+}
