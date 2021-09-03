@@ -35,7 +35,8 @@ import {
   ElTag,
   ElPagination,
   ElDialog,
-  ElCard
+  ElCard,
+  ElTree
 } from "element-plus"
 import "element-plus/lib/theme-chalk/base.css"
 // import 'element-plus/lib/theme-chalk/el-button.css'
@@ -77,7 +78,8 @@ const components = [
   ElPagination,
   ElImage,
   ElDialog,
-  ElCard
+  ElCard,
+  ElTree
 ]
 
 export function registerElementUi(app: App) {

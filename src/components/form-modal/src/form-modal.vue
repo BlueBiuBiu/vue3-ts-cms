@@ -1,7 +1,8 @@
 <template>
   <div class="form-modal">
-    <el-dialog title="提示" v-model="dialogVisible" width="25%" center destroy-on-close>
+    <el-dialog title="提示" v-model="dialogVisible" width="30%" center destroy-on-close>
       <sky-form v-bind="formModalConfig" v-model="formModalData"></sky-form>
+      <slot></slot>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
@@ -22,6 +23,10 @@ export default defineComponent({
     formModalConfig: {
       type: Object,
       required: true
+    },
+    otherInfo: {
+      type: Object,
+      default: () => ({})
     },
     defaultFormValue: {
       type: Object,
@@ -61,14 +66,14 @@ export default defineComponent({
         dialogVisible.value = false
         store.dispatch("system/editDataAction", {
           pageName: props.pageName,
-          newData: { ...formModalData.value },
+          newData: { ...formModalData.value, ...props.otherInfo },
           id: props.defaultFormValue.id
         })
       } else {
         dialogVisible.value = false
         store.dispatch("system/createDataAction", {
           pageName: props.pageName,
-          newData: { ...formModalData.value }
+          newData: { ...formModalData.value, ...props.otherInfo }
         })
       }
     }
