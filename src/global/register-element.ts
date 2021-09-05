@@ -35,6 +35,7 @@ import {
   ElTag,
   ElPagination,
   ElDialog,
+  ElCard,
   ElTree
 } from "element-plus"
 import "element-plus/lib/theme-chalk/base.css"
@@ -77,6 +78,7 @@ const components = [
   ElPagination,
   ElImage,
   ElDialog,
+  ElCard,
   ElTree
 ]
 
